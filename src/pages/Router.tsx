@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { FiMenu } from 'react-icons/fi'; // Importe o ícone desejado aqui
+
+
 import Login from './../pages/Login/Login';
 import PasswordRecovery from './PasswordRecovery/PasswordRecovery';
 import Home from './Home/Home';
+import Profile from './Profile/Profile';
+
 import Sidebar from '../components/sidebar';
 
 const Router = () => {
@@ -54,6 +58,7 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/esqueci-minha-senha" element={<PasswordRecovery />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/perfil" element={<Profile />} />
       </Routes>
     </>
   );
