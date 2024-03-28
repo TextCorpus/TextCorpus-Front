@@ -16,6 +16,7 @@ import {
   extendTheme,
 } from '@chakra-ui/react';
 import colors from '../../theme/colors';
+import { useNavigate } from 'react-router-dom';
 
 const theme = extendTheme({ colors });
 
@@ -23,6 +24,7 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const toast = useToast();
+  const navigate = useNavigate(); // Hook para redirecionamento
 
   const handleLogin = () => {
     // Simulação de lógica de autenticação
@@ -34,6 +36,7 @@ const Login: React.FC = () => {
         duration: 3000,
         isClosable: true,
       });
+      navigate('/home'); // Redireciona para a página Home após o login bem-sucedido
     } else {
       toast({
         title: 'Erro de login',
