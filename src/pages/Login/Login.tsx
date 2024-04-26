@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -17,6 +17,9 @@ import {
 } from '@chakra-ui/react';
 import colors from '../../theme/colors';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../../hooks/useAuth";
+
+
 
 const theme = extendTheme({ colors });
 
@@ -25,6 +28,12 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const toast = useToast();
   const navigate = useNavigate(); // Hook para redirecionamento
+
+  const { login, isAuthenticated, isLoading } = useAuth();
+
+
+  useEffect(() => { isAuthenticated && navigate('/') }, [])
+
 
   const handleLogin = () => {
     // Simulação de lógica de autenticação
@@ -103,8 +112,10 @@ const Login: React.FC = () => {
                 bg: colors.primary[600],
               }}
               onClick={handleLogin}
+              disabled={isLoading}
+              type='submit'
             >
-              Entrar
+              {isLoading ? 'Carregando...' : 'Entrar'}
             </Button>
             <Text align={'center'} mt={2}>
               Esqueceu sua senha?{' '}
