@@ -14,7 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
-import { useAuth } from "../../hooks/useAuth";
+import { useUserStore } from "../../stores/UserStore"; // Importando useUserStore do Zustand
 
 const UserMenuHeader = () => {
     // Placeholder user image URL
@@ -28,17 +28,18 @@ const UserMenuHeader = () => {
 }
 
 const Navbar = () => {
-    const { isAuthenticated } = useAuth();
     const [state, setState] = React.useState({
         left: false,
     });
 
+    const isAuthenticated = useUserStore(state => state.isAuthenticated); // Obter o estado de autenticação do Zustand
+
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>) => {
-      if (event && 'key' in event && (event as React.KeyboardEvent<Element>).key === 'Tab' || (event as React.KeyboardEvent<Element>).key === 'Shift') {
-          return;
-      }
-      setState({ left: open });
-  };
+        if (event && 'key' in event && (event as React.KeyboardEvent<Element>).key === 'Tab' || (event as React.KeyboardEvent<Element>).key === 'Shift') {
+            return;
+        }
+        setState({ left: open });
+    };
 
     const list = (
         <div
@@ -67,7 +68,7 @@ const Navbar = () => {
                         <ListItemText primary={"Perfil"} />
                     </ListItemButton>
                 </ListItem>
-               
+                
                 <ListItem disablePadding>
                     <ListItemButton component={Link} to="/projetos">
                         <ListItemIcon>

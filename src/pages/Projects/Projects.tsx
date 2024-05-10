@@ -23,6 +23,25 @@ import {
 import { FaEdit, FaTrash, FaCalculator, FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'; // Importe useNavigate
 
+import ods1Image from '../../assets/ods1_pt.png';
+import ods2Image from '../../assets/ods2_pt.png';
+import ods3Image from '../../assets/ods3_pt.png';
+import ods4Image from '../../assets/ods4_pt.png';
+import ods5Image from '../../assets/ods5_pt.png';
+import ods6Image from '../../assets/ods6_pt.png';
+import ods7Image from '../../assets/ods7_pt.png';
+import ods8Image from '../../assets/ods8_pt.png';
+import ods9Image from '../../assets/ods9_pt.png';
+import ods10Image from '../../assets/ods10_pt.png';
+import ods11Image from '../../assets/ods11_pt.png';
+import ods12Image from '../../assets/ods12_pt.png';
+import ods13Image from '../../assets/ods13_pt.png';
+import ods14Image from '../../assets/ods14_pt.png';
+import ods15Image from '../../assets/ods15_pt.png';
+import ods16Image from '../../assets/ods16_pt.png';
+import ods17Image from '../../assets/ods17_pt.png';
+
+
 interface Project {
   id: number;
   year: number;
@@ -87,23 +106,23 @@ const Projects: React.FC = () => {
 
   // Array com as imagens dos ODS
   const odsImages = [
-    require('../../image/ods/ods1_pt.png'),
-    require('../../image/ods/ods2_pt.png'),
-    require('../../image/ods/ods3_pt.png'),
-    require('../../image/ods/ods4_pt.png'),
-    require('../../image/ods/ods5_pt.png'),
-    require('../../image/ods/ods6_pt.png'),
-    require('../../image/ods/ods7_pt.png'),
-    require('../../image/ods/ods8_pt.png'),
-    require('../../image/ods/ods9_pt.png'),
-    require('../../image/ods/ods10_pt.png'),
-    require('../../image/ods/ods11_pt.png'),
-    require('../../image/ods/ods12_pt.png'),
-    require('../../image/ods/ods13_pt.png'),
-    require('../../image/ods/ods14_pt.png'),
-    require('../../image/ods/ods15_pt.png'),
-    require('../../image/ods/ods16_pt.png'),
-    require('../../image/ods/ods17_pt.png'),
+    ods1Image,
+    ods2Image,
+    ods3Image,
+    ods4Image,
+    ods5Image,
+    ods6Image,
+    ods7Image,
+    ods8Image,
+    ods9Image,
+    ods10Image,
+    ods11Image,
+    ods12Image,
+    ods13Image,
+    ods14Image,
+    ods15Image,
+    ods16Image,
+    ods17Image
   ];
 
   return (

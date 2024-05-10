@@ -14,44 +14,51 @@ import {
   useToast,
   ChakraProvider,
   extendTheme,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import colors from '../../theme/colors';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from "../../hooks/useAuth";
-
-
-
-const theme = extendTheme({ colors });
+import { AuthRepository } from '../../repository/auth/AuthRepossitory';
+import { useUserStore } from '../../stores/UserStore';
+import UserStorage from '../../util/UserStorage';
+import { UserService } from '../../services/User/UserService';
 
 const Login: React.FC = () => {
+  const theme = extendTheme({ colors });
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setSenha] = useState('');
+  const [isEmailError, setIsEmailError] = useState(false);
+  const [isSenhaError, setIsSenhaError] = useState(false);
+
   const toast = useToast();
-  const navigate = useNavigate(); // Hook para redirecionamento
+  const navigate = useNavigate();
+  const { login } = useUserStore(); // Obter a função de login do hook useUserStore
 
-  const { login, isAuthenticated, isLoading } = useAuth();
+  useEffect(() => {
+    if (UserStorage.hasToken()) {
+      navigate('/home');
+    }
+  }, []); 
 
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    setIsEmailError(event.target.value === '');
+  };
 
-  useEffect(() => { isAuthenticated && navigate('/') }, [])
-
-
-  const handleLogin = () => {
-    // Simulação de lógica de autenticação
-    if (email === 'usuario@example.com' && password === 'senha123') {
+  const handleSenhaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSenha(event.target.value);
+    setIsSenhaError(event.target.value === '');
+  };
+  const handleLogin = async () => {
+    try {
+      await login(email, senha); // Chamar a função de login diretamente
+      navigate('/home');
+    } catch (error) {
       toast({
-        title: 'Login bem-sucedido',
-        description: 'Você foi autenticado com sucesso.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-      navigate('/home'); // Redireciona para a página Home após o login bem-sucedido
-    } else {
-      toast({
-        title: 'Erro de login',
-        description: 'Credenciais inválidas. Tente novamente.',
+        position: 'top',
+        title: 'Usuário e senha não conferem.',
         status: 'error',
-        duration: 3000,
+        duration: 5000,
         isClosable: true,
       });
     }
@@ -77,34 +84,34 @@ const Login: React.FC = () => {
             {/* Aqui vai a imagem */}
             <img src="https://via.placeholder.com/400" alt="Imagem de Login" />
           </Box>
-          <Stack
-            flex={'1'}
-            py={12}
-            px={6}
-            align={'center'}
-            justify={'center'}
-          >
+          <Stack flex={'1'} py={12} px={6} align={'center'} justify={'center'}>
             <Heading fontSize={'4xl'} color={colors.primary[600]}>
               Login
             </Heading>
-            <FormControl id="email" isRequired>
+
+            <FormControl isRequired isInvalid={isEmailError}>
               <FormLabel color={colors.primary[600]}>Email</FormLabel>
               <Input
                 type="email"
                 placeholder="Digite seu email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
               />
+              {isEmailError && <FormErrorMessage>Email é necessário.</FormErrorMessage>}
             </FormControl>
-            <FormControl id="password" isRequired>
+
+            <FormControl isRequired isInvalid={isSenhaError}>
               <FormLabel color={colors.primary[600]}>Senha</FormLabel>
               <Input
+                required
                 type="password"
                 placeholder="Digite sua senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={senha}
+                onChange={handleSenhaChange}
               />
+              {isSenhaError && <FormErrorMessage>Senha é necessária.</FormErrorMessage>}
             </FormControl>
+
             <Button
               bg={colors.primary[500]}
               color={'white'}
@@ -112,10 +119,9 @@ const Login: React.FC = () => {
                 bg: colors.primary[600],
               }}
               onClick={handleLogin}
-              disabled={isLoading}
-              type='submit'
+              type="submit"
             >
-              {isLoading ? 'Carregando...' : 'Entrar'}
+              Logar
             </Button>
             <Text align={'center'} mt={2}>
               Esqueceu sua senha?{' '}
