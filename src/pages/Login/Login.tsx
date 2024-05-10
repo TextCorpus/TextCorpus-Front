@@ -33,12 +33,12 @@ const Login: React.FC = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { login } = useUserStore(); // Obter a função de login do hook useUserStore
+  const isAuthenticated = useUserStore(state => state.isAuthenticated);
 
-  useEffect(() => {
-    if (UserStorage.hasToken()) {
-      navigate('/home');
-    }
-  }, []); 
+
+  if (isAuthenticated) {
+    navigate("/home");
+  }
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
