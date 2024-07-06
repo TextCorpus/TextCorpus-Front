@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Button,
   Flex,
   Heading,
-  Icon,
-  IconButton,
+  FormControl,
+  FormLabel,
   Input,
-  Grid,
-  Image,
+  Button,
   Text,
+  IconButton,
+  Icon,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
   ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   useDisclosure,
-  useToast,
+  Image
 } from '@chakra-ui/react';
-import { FaEdit, FaTrash, FaCalculator, FaPlus } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // Importe useNavigate
-
+import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
+import { ProjetosService } from '../../services/Projetos/ProjetosService'; // Substitua pelo caminho correto
+import { Projetos } from '../../entity/Projetos/Projetos'; // Substitua pelo caminho correto
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 import ods1Image from '../../assets/ods1_pt.png';
 import ods2Image from '../../assets/ods2_pt.png';
 import ods3Image from '../../assets/ods3_pt.png';
@@ -40,40 +43,33 @@ import ods14Image from '../../assets/ods14_pt.png';
 import ods15Image from '../../assets/ods15_pt.png';
 import ods16Image from '../../assets/ods16_pt.png';
 import ods17Image from '../../assets/ods17_pt.png';
-
-
-interface Project {
-  id: number;
-  year: number;
-  title: string;
-  discente: string;
-  orientador: string;
-  resumo: string;
-}
-
-const initialProjects: Project[] = [
-  { id: 1, year: 2024, title: 'Título do Projeto 1', discente: 'Nome do Discente', orientador: 'Nome do Orientador', resumo: 'Resumo do Projeto 1' },
-  { id: 2, year: 2023, title: 'Título do Projeto 2', discente: 'Outro Discente', orientador: 'Outro Orientador', resumo: 'Resumo do Projeto 2' },
-  { id: 3, year: 2022, title: 'Título do Projeto 3', discente: 'Discente 3', orientador: 'Orientador 3', resumo: 'Resumo do Projeto 3' },
-  // Adicione mais projetos de exemplo aqui
-];
+import { Grid } from '@chakra-ui/react';
+import UserStorage from '../../util/UserStorage';
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projects, setProjects] = useState<Projetos[]>([]);
+  const [selectedProject, setSelectedProject] = useState<Projetos | null>(null); // Estado para o projeto selecionado
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isNewModalOpen, onOpen: openNewModal, onClose: closeNewModal } = useDisclosure();
+  const { isOpen: isEditModalOpen, onOpen: openEditModal, onClose: closeEditModal } = useDisclosure();
   const { isOpen: isDeleteModalOpen, onOpen: openDeleteModal, onClose: closeDeleteModal } = useDisclosure();
-  const projectsPerPage = 5; // Número de projetos por página
-  const toast = useToast();
-  const navigate = useNavigate(); // Utilize useNavigate para navegar entre rotas
+  const projectsPerPage = 5;
+  const navigate = useNavigate();
 
-  const indexOfLastProject = currentPage * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const fetchProjects = async () => {
+    try {
+      const fetchedProjects = await ProjetosService.get();
+      setProjects(fetchedProjects);
+      console.log(fetchedProjects);
+    } catch (error) {
+      console.error('Erro ao buscar projetos:', error);
+    }
+  };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -81,28 +77,69 @@ const Projects: React.FC = () => {
   };
 
   const handleNewProject = () => {
-    // Implemente a lógica para criar um novo projeto aqui
-    toast({
-      title: "Novo Projeto",
-      description: "Novo projeto criado com sucesso!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
+    setSelectedProject(null); // Reseta o projeto selecionado ao abrir o modal de novo projeto
+    openNewModal();
+  };
+
+  const handleCreateProject = () => {
+    if (!selectedProject) return;
+
+    const newProject = new Projetos({
+      titulo: selectedProject?.titulo || '',
+      userid: UserStorage.getUserId(),
+      ano_inicial: selectedProject?.ano_inicial || 0,
+      ano_final: selectedProject?.ano_final || 0,
     });
-    onOpen();
+
+    ProjetosService.create(newProject)
+      .then((createdProject: any) => {
+        setProjects([...projects, createdProject]);
+        closeNewModal();
+      })
+      .catch((error: any) => {
+        console.error('Erro ao criar projeto:', error);
+      });
+  };
+
+  const handleEditProject = () => {
+    if (!selectedProject) return;
+
+    ProjetosService.update(selectedProject)
+      .then((updatedProject: any) => {
+        const updatedProjects = projects.map((project) =>
+          project.id_projeto === updatedProject.id_projeto ? updatedProject : project
+        );
+        setProjects(updatedProjects);
+        closeEditModal();
+      })
+      .catch((error: any) => {
+        console.error('Erro ao atualizar projeto:', error);
+      });
   };
 
   const handleDeleteProject = (id: number) => {
-    // Implemente a lógica para excluir um projeto aqui
-    closeDeleteModal();
-    toast({
-      title: "Projeto Excluído",
-      description: "O projeto foi excluído com sucesso!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+    ProjetosService.delete(id)
+      .then(() => {
+        const updatedProjects = projects.filter(project => project.id_projeto !== id);
+        setProjects(updatedProjects);
+        closeDeleteModal();
+      })
+      .catch((error: any) => {
+        console.error('Erro ao excluir projeto:', error);
+      });
   };
+
+  const handleEditClick = (project: Projetos) => {
+    setSelectedProject(project);
+    openEditModal();
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setSelectedProject(projects.find(project => project.id_projeto === id) || null);
+    openDeleteModal();
+  };
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   // Array com as imagens dos ODS
   const odsImages = [
@@ -124,6 +161,10 @@ const Projects: React.FC = () => {
     ods16Image,
     ods17Image
   ];
+
+  const indexOfLastProject = currentPage * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
 
   return (
     <Box p={4} marginLeft={20} borderRadius="md" bg="white.100">
@@ -153,57 +194,39 @@ const Projects: React.FC = () => {
       <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={4}>
         {currentProjects.map((project) => (
           <Box
-            key={project.id}
+            key={project.id_projeto}
             position="relative"
             borderRadius="md"
             boxShadow="md"
             bg="white"
             p={4}
-            onClick={() => navigate(`/lista-projetos/${project.id}`)} // Redireciona para o dashboard do projeto
+            onClick={() => navigate(`/lista-projetos/${project.id_projeto}`)}
             style={{ cursor: "pointer" }}
           >
-            <Image src={odsImages[project.id % odsImages.length]} borderRadius="full" boxSize="50px" objectFit="cover" mb={2} />
-            <Text fontSize="lg" fontWeight="bold">{project.title}</Text>
-            <Text fontSize="sm" color="gray.500">{project.year}</Text>
+            <Text fontSize="md " color="gray.500">{project.titulo}</Text>
+            <Text fontSize="sm" color="gray.500">{project.ano_inicial} - {project.ano_final}</Text>
+
             <Flex justify="flex-end" position="absolute" top={2} right={2}>
               <IconButton
                 aria-label="Editar"
                 icon={<Icon as={FaEdit} />}
                 mr={2}
+                mt={6}
                 onClick={(e) => {
-                  e.stopPropagation(); // Impedir que o clique no botão de edição propague para o card
-                  setSelectedProject(project);
-                  onOpen();
+                  e.stopPropagation();
+                  handleEditClick(project);
                 }}
                 colorScheme="blue"
                 variant="ghost"
                 _hover={{ color: 'blue.500' }}
               />
-              <IconButton
-                aria-label="Excluir"
-                icon={<Icon as={FaTrash} />}
-                mr={2}
-                onClick={(e) => {
-                  e.stopPropagation(); // Impedir que o clique no botão de exclusão propague para o card
-                  openDeleteModal();
-                }}
-                colorScheme="red"
-                variant="ghost"
-                _hover={{ color: 'red.500' }}
-              />
-              <IconButton
-                aria-label="Calcular Similaridade"
-                icon={<Icon as={FaCalculator} />}
-                colorScheme="teal"
-                variant="ghost"
-                _hover={{ color: 'teal.500' }}
-              />
-            </Flex>
-            <Flex justify="center" mt={4} flexWrap="wrap">
+
+            </Flex>     
+             <Flex justify="center" mt={4} flexWrap="wrap">
               {odsImages.map((image, index) => (
                 <Box key={index} textAlign="center" mr={2} mb={2}>
                   <Image src={image} boxSize="35px" borderRadius="12" mb={1} />
-                  <Text fontSize="sm" color="gray.500" mb={1}>   {/* Estilização do número percentual */}
+                  <Text fontSize="sm" color="gray.500" mb={1}>
                     <span style={{ fontSize: '12px', color: 'gray' }}>{Math.floor(Math.random() * 101)}</span>%
                   </Text>
                 </Box>
@@ -228,22 +251,85 @@ const Projects: React.FC = () => {
           </Button>
         ))}
       </Flex>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isNewModalOpen} onClose={closeNewModal}>
+        <ModalOverlay />
+        <ModalContent bg="white" borderRadius="md">
+          <ModalHeader>Novo Projeto</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl id="titulo" mb={4}>
+              <FormLabel>Título do Projeto</FormLabel>
+              <Input
+                value={selectedProject?.titulo || ''}
+                onChange={(e) => setSelectedProject({ ...selectedProject, titulo: e.target.value })}
+                placeholder="Título do Projeto"
+              />
+            </FormControl>
+            <FormControl id="ano_inicial" mb={4}>
+              <FormLabel>Ano Inicial</FormLabel>
+              <Input
+                value={selectedProject?.ano_inicial || ''}
+                onChange={(e) => setSelectedProject({ ...selectedProject, ano_inicial: Number(e.target.value) })}
+                type="number"
+                placeholder="Ano Inicial"
+              />
+            </FormControl>
+            <FormControl id="ano_final" mb={4}>
+              <FormLabel>Ano Final</FormLabel>
+              <Input
+                value={selectedProject?.ano_final || ''}
+                onChange={(e) => setSelectedProject({ ...selectedProject, ano_final: Number(e.target.value) })}
+                type="number"
+                placeholder="Ano Final"
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleCreateProject}>
+              Criar Projeto
+            </Button>
+            <Button onClick={closeNewModal}>Cancelar</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
         <ModalOverlay />
         <ModalContent bg="white" borderRadius="md">
           <ModalHeader>Editar Projeto</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>ID do Projeto: {selectedProject?.id}</Text>
-            <Input value={selectedProject?.title} placeholder="Título" mb={4} />
+            <FormControl id="titulo" mb={4}>
+              <FormLabel>Título do Projeto</FormLabel>
+              <Input
+                value={selectedProject?.titulo || ''}
+                onChange={(e) => setSelectedProject({ ...selectedProject, titulo: e.target.value })}
+                placeholder="Título do Projeto"
+              />
+            </FormControl>
+            <FormControl id="ano_inicial" mb={4}>
+              <FormLabel>Ano Inicial</FormLabel>
+              <Input
+                value={selectedProject?.ano_inicial || ''}
+                onChange={(e) => setSelectedProject({ ...selectedProject, ano_inicial: Number(e.target.value) })}
+                type="number"
+                placeholder="Ano Inicial"
+              />
+            </FormControl>
+            <FormControl id="ano_final" mb={4}>
+              <FormLabel>Ano Final</FormLabel>
+              <Input
+                value={selectedProject?.ano_final || ''}
+                onChange={(e) => setSelectedProject({ ...selectedProject, ano_final: Number(e.target.value) })}
+                type="number"
+                placeholder="Ano Final"
+              />
+            </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button variant="outline" mr={3} onClick={onClose} colorScheme="gray">
-              Cancelar
+            <Button colorScheme="blue" mr={3} onClick={handleEditProject}>
+              Atualizar Projeto
             </Button>
-            <Button colorScheme="blue" onClick={onClose}>
-              Salvar
-            </Button>
+            <Button onClick={closeEditModal}>Cancelar</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -253,15 +339,13 @@ const Projects: React.FC = () => {
           <ModalHeader>Excluir Projeto</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Tem certeza de que deseja excluir este projeto?
+            Tem certeza que deseja excluir o projeto?
           </ModalBody>
           <ModalFooter>
-            <Button variant="outline" mr={3} onClick={closeDeleteModal} colorScheme="gray">
-              Cancelar
-            </Button>
-            <Button colorScheme="red" onClick={() => handleDeleteProject(1)}>
+            <Button colorScheme="red" mr={3} onClick={() => handleDeleteProject(selectedProject?.id_projeto || 0)}>
               Excluir
             </Button>
+            <Button onClick={closeDeleteModal}>Cancelar</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

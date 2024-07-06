@@ -10,6 +10,7 @@ import ProjectList from './pages/ProjectsList/ProjectsList';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Navbar from './components/Side/side';
 import {NotFound} from './pages/NotFound'; // Importe NotFound corretamente
+import CompareDocumentsPage from './pages/CompareDocuments/CompareDocumentsPage';
 
 const Pages =() =><Routes></Routes>
 
@@ -29,6 +30,7 @@ const AppRoutes = () =>{
         <Route path="/projetos" element={<PrivateRoute><Projects/></PrivateRoute>}/>
         <Route path="/lista-projetos/:id" element={<PrivateRoute><ProjectList/></PrivateRoute>}/>
         <Route path="/dashboard/:id" element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
+        <Route path="/compara/:id" element={<PrivateRoute><CompareDocumentsPage/></PrivateRoute>}/>
 
         <Route path="*" element={<NotFound/>}/>
 

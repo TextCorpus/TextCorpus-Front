@@ -1,11 +1,11 @@
-import { Afiliacao } from './Afiliacao';
+import { Filiacao } from '../Filiacao/Filiacao';
 
 export class  User {
     id_user: number;
     nome: string;
     email: string;
     senha: string;
-    filiacoes: Afiliacao[]; 
+    filiacoes: Filiacao[]; 
     
     constructor (data:any ={}) {
 
@@ -15,10 +15,5 @@ export class  User {
         this.senha = data?.senha || '';
         this.filiacoes = data?.filiacoes || [];
 
-        if (data?.afiliacoes && Array.isArray(data?.afiliacoes)) {
-            for (const afiliacao of data?.afiliacoes) {
-                this.filiacoes.push(new Afiliacao(afiliacao));
-            }
-        }
     }
   }

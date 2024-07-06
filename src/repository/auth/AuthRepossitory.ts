@@ -3,12 +3,12 @@ import ApiClient from "../../client/ApiClient";
 const apiClient = new ApiClient()
 
 export class AuthRepository {
-  public static async login(email: string, senha: string): Promise<{ token: string; userId: number }> {
+  public static async login(email: string, senha: string): Promise<{ access_token: string;}> {
     try {
       const data = { email, senha };
       const res = await apiClient.DoRequest('POST', '/auth/login', data);
       
-      return { token: res.access_token, userId: res.userId }; // Retorne também o userId
+      return { access_token: res.access_token }; // Retorne também o userId
       
     } catch (error: any) {
       console.error('error', error);

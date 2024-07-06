@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
 import { ReactNode } from 'react';
-import {useUserStore}  from "../../stores/UserStore";
+import UserStorage from "../../util/UserStorage";
 
 export default function Private({ children }: { children: ReactNode }){
     
-    const isAuthenticated = useUserStore(state => state.isAuthenticated);
+    const isAuthenticated = UserStorage.getToken();
 
     if(!isAuthenticated){
         return <Navigate to="/"/>

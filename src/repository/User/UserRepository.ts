@@ -7,10 +7,11 @@ const client = new ApiClient();
 export class UserRepository {
 
 
-
-    public static async getUser(): Promise<User> {
+    public static async getUser( token: string): Promise<User> {
+        
+        const headers = { Authorization: `Bearer ${token}` }
         try {
-            const user = await client.DoRequest("GET", "/user");
+            const user = await client.DoRequest("GET", `/user/`, {}, headers);
             return new User(user);
         } catch (error) {
             throw new Error("Erro ao buscar usuário na API");

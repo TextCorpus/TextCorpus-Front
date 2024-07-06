@@ -1,11 +1,11 @@
-import { UserRepository } from './../../repository/User/UserRepository';
-import { User } from "../../entity/user/User";
+import { FiliacaoRepository } from './../../repository/Filiacao/FiliacaoRepository';
+import { Filiacao } from "../../entity/Filiacao/Filiacao";
 import UserStorage from "../../util/UserStorage";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export class UserService {
-    public static async get(): Promise<User> {
+export class FiliacaoService {
+    public static async get(): Promise<Filiacao | null> {
         const token = UserStorage.getToken();
         if (!token) {
             const message = 'Token não encontrado. Por favor, faça login.';
@@ -14,15 +14,43 @@ export class UserService {
         }
 
         try {
-            const userData = await UserRepository.getUser(token);
-            return new User(userData);
+            const filiacaoData = await FiliacaoRepository.getFiliacao(token);
+            if (!filiacaoData) {
+                return null; // Retorna null se não houver filiação encontrada
+            }
+            return new Filiacao(filiacaoData);
         } catch (error: any) {
             this.handleError(error);
         }
     }
 
+    public static async getByID(): Promise<Filiacao | null> {
+        const token = UserStorage.getToken();
+        if (!token) {
+            const message = 'Token não encontrado. Por favor, faça login.';
+            toast.error(message);
+            throw new Error(message);
+        }
 
-    public static async getByID(): Promise<User> {
+        const filiacaoId = UserStorage.getUserId();
+        if (!filiacaoId) {
+            const message = 'ID do usuário não encontrado no token.';
+            toast.error(message);
+            throw new Error(message);
+        }
+
+        try {
+            const filiacaoData = await FiliacaoRepository.getFiliacaoById(filiacaoId, token);
+            if (!filiacaoData) {
+                return null; // Retorna null se não houver filiação encontrada
+            }
+            return new Filiacao(filiacaoData);
+        } catch (error: any) {
+            this.handleError(error);
+        }
+    }
+
+    public static async create(filiacao: Filiacao): Promise<void> {
         const token = UserStorage.getToken();
         if (!token) {
             const message = 'Token não encontrado. Por favor, faça login.';
@@ -37,15 +65,17 @@ export class UserService {
             throw new Error(message);
         }
 
+        filiacao.id_user = userId;
+
         try {
-            const userData = await UserRepository.getUserById(userId, token);
-            return new User(userData);
+            await FiliacaoRepository.createFiliacao(filiacao, token);
+            toast.success('Filiacao criada com sucesso!');
         } catch (error: any) {
             this.handleError(error);
         }
     }
 
-    public static async update(user: User): Promise<User> {
+    public static async update(filiacao: Filiacao): Promise<Filiacao> {
         const token = UserStorage.getToken();
         if (!token) {
             const message = 'Token não encontrado. Por favor, faça login.';
@@ -53,19 +83,11 @@ export class UserService {
             throw new Error(message);
         }
 
-        const userId = UserStorage.getUserId();
-        if (!userId) {
-            const message = 'ID do usuário não encontrado no token.';
-            toast.error(message);
-            throw new Error(message);
-        }
-
-        user.id_user = userId; // Assegurar que o ID do usuário é o que está no token
-
+        console.log(filiacao);
         try {
-            const updatedUserData = await UserRepository.updateUser(user, token);
-            toast.success('Usuário atualizado com sucesso!');
-            return new User(updatedUserData);
+            const updatedFiliacaoData = await FiliacaoRepository.updateFiliacao(filiacao, token);
+            toast.success('Filiação atualizada com sucesso!');
+            return new Filiacao(updatedFiliacaoData);
         } catch (error: any) {
             this.handleError(error);
         }
@@ -87,7 +109,7 @@ export class UserService {
         }
 
         try {
-            await UserRepository.deleteUser(userId, token);
+            await FiliacaoRepository.deleteFiliacao(userId, token);
             toast.success('Usuário deletado com sucesso!');
         } catch (error: any) {
             this.handleError(error);

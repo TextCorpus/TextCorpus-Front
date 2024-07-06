@@ -1,11 +1,11 @@
-import { UserRepository } from './../../repository/User/UserRepository';
-import { User } from "../../entity/user/User";
+import { ProjetosRepository } from './../../repository/Projetos/ProjetosRepository';
+import { Projetos } from "../../entity/Projetos/Projetos";
 import UserStorage from "../../util/UserStorage";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export class UserService {
-    public static async get(): Promise<User> {
+export class ProjetosService {
+    public static async get(): Promise<Projetos[]> {
         const token = UserStorage.getToken();
         if (!token) {
             const message = 'Token não encontrado. Por favor, faça login.';
@@ -14,15 +14,30 @@ export class UserService {
         }
 
         try {
-            const userData = await UserRepository.getUser(token);
-            return new User(userData);
+            const projetosData = await ProjetosRepository.getProjetos(token);
+            return projetosData.map((item: any) => new Projetos(item));
+        } catch (error: any) {
+            this.handleError(error);
+        }
+    }
+    public static async getById(id: number): Promise<Projetos> {
+        const token = UserStorage.getToken();
+        if (!token) {
+            const message = 'Token não encontrado. Por favor, faça login.';
+            toast.error(message);
+            throw new Error(message);
+        }
+
+        try {
+            const projetosData = await ProjetosRepository.getProjetosById(id, token);
+            return new Projetos(projetosData);
         } catch (error: any) {
             this.handleError(error);
         }
     }
 
-
-    public static async getByID(): Promise<User> {
+    public static async update(projetos: Projetos): Promise<Projetos> {
+        console.log(projetos)
         const token = UserStorage.getToken();
         if (!token) {
             const message = 'Token não encontrado. Por favor, faça login.';
@@ -30,22 +45,16 @@ export class UserService {
             throw new Error(message);
         }
 
-        const userId = UserStorage.getUserId();
-        if (!userId) {
-            const message = 'ID do usuário não encontrado no token.';
-            toast.error(message);
-            throw new Error(message);
-        }
-
         try {
-            const userData = await UserRepository.getUserById(userId, token);
-            return new User(userData);
+            const updatedProjetosData = await ProjetosRepository.updateProjetos(projetos, token);
+            toast.success('Projeto atualizado com sucesso!');
+            return new Projetos(updatedProjetosData);
         } catch (error: any) {
             this.handleError(error);
         }
     }
 
-    public static async update(user: User): Promise<User> {
+    public static async delete(id: number): Promise<void> {
         const token = UserStorage.getToken();
         if (!token) {
             const message = 'Token não encontrado. Por favor, faça login.';
@@ -53,25 +62,15 @@ export class UserService {
             throw new Error(message);
         }
 
-        const userId = UserStorage.getUserId();
-        if (!userId) {
-            const message = 'ID do usuário não encontrado no token.';
-            toast.error(message);
-            throw new Error(message);
-        }
-
-        user.id_user = userId; // Assegurar que o ID do usuário é o que está no token
-
         try {
-            const updatedUserData = await UserRepository.updateUser(user, token);
-            toast.success('Usuário atualizado com sucesso!');
-            return new User(updatedUserData);
+            await ProjetosRepository.deleteProjetos(id, token);
+            toast.success('Projeto deletado com sucesso!');
         } catch (error: any) {
             this.handleError(error);
         }
     }
 
-    public static async delete(): Promise<void> {
+    public static async create(projetos: Projetos): Promise<Projetos> {
         const token = UserStorage.getToken();
         if (!token) {
             const message = 'Token não encontrado. Por favor, faça login.';
@@ -79,16 +78,11 @@ export class UserService {
             throw new Error(message);
         }
 
-        const userId = UserStorage.getUserId();
-        if (!userId) {
-            const message = 'ID do usuário não encontrado no token.';
-            toast.error(message);
-            throw new Error(message);
-        }
-
         try {
-            await UserRepository.deleteUser(userId, token);
-            toast.success('Usuário deletado com sucesso!');
+            console.log(projetos)
+            const createdProjetosData = await ProjetosRepository.createProjetos(projetos, token);
+            toast.success('Projeto criado com sucesso!');
+            return new Projetos(createdProjetosData);
         } catch (error: any) {
             this.handleError(error);
         }

@@ -32,7 +32,7 @@ class ApiClient {
   }
 
   public getBaseUri(): string {
-    return "http://185.137.92.41:3000" ?? "";
+    return "http://185.137.92.41:3001" ?? "";
   }
 
   public getRestDefaultUri(): string {

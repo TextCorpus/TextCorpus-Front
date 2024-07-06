@@ -15,6 +15,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import { useUserStore } from "../../stores/UserStore"; // Importando useUserStore do Zustand
+import UserStorage from "../../util/UserStorage";
 
 const UserMenuHeader = () => {
     // Placeholder user image URL
@@ -32,7 +33,6 @@ const Navbar = () => {
         left: false,
     });
 
-    const isAuthenticated = useUserStore(state => state.isAuthenticated); // Obter o estado de autenticação do Zustand
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>) => {
         if (event && 'key' in event && (event as React.KeyboardEvent<Element>).key === 'Tab' || (event as React.KeyboardEvent<Element>).key === 'Shift') {
@@ -82,8 +82,15 @@ const Navbar = () => {
         </div>
     );
 
-    if (!isAuthenticated) {
-        return null; // Não renderizar a Navbar se o usuário não estiver autenticado
+
+const {isAuthenticated} = useUserStore();
+const token = UserStorage.getToken();
+
+const verdade = isAuthenticated || !!token;
+
+    if (!verdade) {
+
+        return null;
     }
 
     return (

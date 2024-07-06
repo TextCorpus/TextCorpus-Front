@@ -33,17 +33,21 @@ const Login: React.FC = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { login } = useUserStore(); // Obter a função de login do hook useUserStore
-  const isAuthenticated = useUserStore(state => state.isAuthenticated);
 
 
-  if (isAuthenticated) {
-    navigate("/home");
-  }
-
+  useEffect(() => {
+    const token = UserStorage.getToken();
+    if (token) {
+      navigate('/home'); // Redirecionar para a página home se o token existir
+    }
+  }, []);
+  
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
     setIsEmailError(event.target.value === '');
   };
+
+
 
   const handleSenhaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSenha(event.target.value);
