@@ -1,0 +1,43 @@
+{
+  "columns": [
+    {
+      "key": "id_modelo",
+      "label": "ID",
+      "editable": false,
+      "isKey": true,
+      "dataType": "number",
+      "elementType": "input"
+    },
+    {
+      "key": "descricao",
+      "label": "Descrição",
+      "editable": true,
+      "isKey": false,
+      "dataType": "string",
+      "elementType": "input"
+    },
+    {
+      "key": "projeto",
+      "label": "Projeto",
+      "editable": true,
+      "isKey": false,
+      "dataType": "string",
+      "elementType": "selectDinamic",  
+      "dynamicEndpoint": "http://185.137.92.41:3001/projetos/list",  
+      "dynamicValueField": "id_projeto",  
+      "dynamicLabelField": "titulo" 
+    },
+    {
+      "key": "data_criacao",
+      "label": "Data Criação",
+      "editable": false,
+      "isKey": false,
+      "dataType": "date",
+      "elementType": "input"
+    }
+  ],
+  "fetchEndpoint": "http://185.137.92.41:3001/modelos",
+  "createEndpoint": "http://185.137.92.41:3001/modelos",
+  "updateEndpoint": "http://185.137.92.41:3001/modelos",
+  "deleteEndpoint": "http://185.137.92.41:3001/modelos"
+}
