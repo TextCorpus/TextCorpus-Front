@@ -12,6 +12,7 @@ import Login from './pages/Login';
 //import CadastroModelo from './pages/CadastroModelo';
 import CadastroModelos from './pages/CadastroModelos';
 import Dashboard from './pages/processos';
+import GraphComponent from './components/GraphV2/GraphComponent';
 
 const columnsAfiliacao = [
   { key: 'id_filiacao', label: 'ID', editable: false, isKey: true },
@@ -21,21 +22,9 @@ const columnsAfiliacao = [
   { key: 'uf', label: 'UF', editable: true, isKey: false },
 ];
 
-// // Endpoints da API para o DataTable
-// const endpointsAfiliacao = {
-//   fetch: 'http://185.137.92.41:3001/afiliacao/userAllAfiliacoes',  // Endpoint para buscar os dados
-//   create: 'http://185.137.92.41:3001/afiliacao', // Endpoint para criar um novo registro
-//   update: 'http://185.137.92.41:3001/afiliacao', // Endpoint para atualizar um registro existente
-//   delete: 'http://185.137.92.41:3001/afiliacao'  // Endpoint para excluir um registro
-// };
-
-// const RedirectToExternal = () => {
-//   useEffect(() => {
-//     window.location.href = "http://text-corpus.com/compara/20";
-//   }, []);
-
-//   return null; // Retorna null porque não há nada para renderizar
-// };
+const apiUrl = "http://185.137.92.41:3001/documento/graph/2";
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByb2Yuam9zZWNhcm1pbm9AdWxpZmUuY29tLmJyIiwic3ViIjoxLCJpYXQiOjE3MzI0MzMxMDksImV4cCI6MTczMjQzNjcwOX0.vAQxja5bHcGMKKBAJJhB2yYMb7qtdlinulBUwV0Of9c";
 
 const Grafico = () => {
   useEffect(() => {
@@ -61,7 +50,7 @@ const App: React.FC = () => {
             { }
             <Route path="/descritores" element={
               <PrivateRoute>
-                <Projetos descritor={1}/>
+                <Projetos descritor={1} />
               </PrivateRoute>
             }
             />
@@ -78,9 +67,12 @@ const App: React.FC = () => {
             }
             />
             <Route path="/relatorios" element={
-              <PrivateRoute>
-                <Grafico />
-              </PrivateRoute>
+              // <PrivateRoute>
+              //   <Grafico />
+              // </PrivateRoute>
+              <ChakraProvider>
+                <GraphComponent apiUrl={apiUrl} token={token} />
+              </ChakraProvider>
             }
             />
             {/* Adicione outras rotas conforme necessário */}
