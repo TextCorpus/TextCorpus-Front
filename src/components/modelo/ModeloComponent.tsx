@@ -4,6 +4,7 @@ import fetchData from '../../utils/fetchData';
 import { useCustomToast } from '../../utils/toastUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faServer } from '@fortawesome/free-solid-svg-icons';
+import config from '../../config';
 
 interface Documento {
   id_documento: number;
@@ -29,7 +30,7 @@ const ModeloComponent: React.FC<ModeloProps> = ({ id_modelo, documentos }) => {
   const handleTreinamentoClick = async () => {
     //setLoadingDocuments(true);
     try {
-      const url = `http://185.137.92.41:3001/process/enqueue`;
+      const url = `${config.apiUrl}/process/enqueue`;
       const metodo = 'post';
       const dados = {
         "processName": "trainBayesianNetwork",
@@ -73,7 +74,7 @@ const ModeloComponent: React.FC<ModeloProps> = ({ id_modelo, documentos }) => {
         return doc;
       })
     );
-    await fetchData(`http://185.137.92.41:3001/documento-modelo/${xid_modelo}/${xid_documento}`, 'patch', toast, { usar: xusar });
+    await fetchData(`${config.apiUrl}/documento-modelo/${xid_modelo}/${xid_documento}`, 'patch', toast, { usar: xusar });
   };
 
   return (

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import CytoscapeComponent from 'react-cytoscapejs';
 import { Box, Spinner, Text, Button } from '@chakra-ui/react';
+import config from '../../config';
 
 // Interfaces para o formato dos dados do grafo
 interface GraphNode {
@@ -31,7 +32,7 @@ const GraphComponent: React.FC<GraphProps> = ({ id_documento, titulo }) => {
   const fetchGraphData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://185.137.92.41:3001/documento/graph/${id_documento}`, {
+      const response = await axios.get(`${config.apiUrl}/documento/graph/${id_documento}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

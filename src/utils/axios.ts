@@ -1,9 +1,10 @@
 // src/utils/axios.ts
 import axios from 'axios';
+import config from '../config';
 
 // Criar uma instância do axios
 const api = axios.create({
-  baseURL: 'http://185.137.92.41:3001/', // Base URL da sua API
+  baseURL: `${config.apiUrl}/`, // Base URL da sua API
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -11,7 +12,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token'); // Pegar o token do localStorage
-    console.log('Interceptor de requisição acionado. URL:', config.url);
+    // console.log('Interceptor de requisição acionado. URL:', config.url);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`; // Adicionar o Bearer token
     }

@@ -1,3 +1,4 @@
+
 {
   "columns": [
     {
@@ -18,7 +19,7 @@
     },
     {
       "key": "funcao",
-      "label": "Função kkk",
+      "label": "Função",
       "editable": true,
       "isKey": false,
       "dataType": "string",
@@ -100,8 +101,8 @@
       ]
     }
   ],
-  "fetchEndpoint": "http://185.137.92.41:3001/afiliacao/userAllAfiliacoes",
-  "createEndpoint": "http://185.137.92.41:3001/afiliacao",
-  "updateEndpoint": "http://185.137.92.41:3001/afiliacao",
-  "deleteEndpoint": "http://185.137.92.41:3001/afiliacao"
+  "fetchEndpoint":  "https://backend.impactosociedade.com.br/afiliacao/userAllAfiliacoes",
+  "createEndpoint": "https://backend.impactosociedade.com.br/afiliacao",
+  "updateEndpoint": "https://backend.impactosociedade.com.br/afiliacao",
+  "deleteEndpoint": "https://backend.impactosociedade.com.br/afiliacao"
 }

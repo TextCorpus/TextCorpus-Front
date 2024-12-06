@@ -16,6 +16,7 @@ import {
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import ValidaDocumentoModal from '../modelo/ValidaDocumentoModal';
+import config from '../../config';
 
 interface DataTableResultModelsProps {
   id_modelo: number;
@@ -60,7 +61,7 @@ const DataTableResultModels: React.FC<DataTableResultModelsProps> = ({ id_modelo
     if (id_modelo && id_projeto) {
       const fetchData = async () => {
         try {
-          const caminho = `http://185.137.92.41:3001/process/formattedresults/${id_modelo}/${id_projeto}/${validacao ? '0' : '1'}`;
+          const caminho = `${config.apiUrl}/process/formattedresults/${id_modelo}/${id_projeto}/${validacao ? '0' : '1'}`;
           const response = await axios.get(caminho);
           const responseData = response.data.data;
 

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Box, Button, Input, FormControl, FormLabel, Heading, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import config from '../config';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +19,8 @@ const Login: React.FC = () => {
     console.log(" emial ", email, " senha ", senha)
 
     try {
-      const response = await axios.post('http://185.137.92.41:3001/auth/login', {
+      console.log(" CARMINO ", config.apiUrl)
+      const response = await axios.post(`${config.apiUrl}/auth/login`, {
         email,
         senha,
       });

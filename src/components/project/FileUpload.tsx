@@ -5,6 +5,7 @@ import {
 } from "@chakra-ui/react";
 import * as XLSX from 'xlsx';
 import axios from 'axios';
+import config from '../../config';
 const Papa = require('papaparse');
 
 interface FileUploadProps {
@@ -144,7 +145,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ isOpen, onClose, id_projeto }) 
     // Função para enviar 'data' para o servidor e atualizar o progresso
     const sendData = async (data: Data, token: string, currentIndex: number, totalRows: number): Promise<void> => {
         try {
-            await axios.post('http://185.137.92.41:3001/documento', data, {
+            await axios.post(`${config.apiUrl}/documento`, data, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setProgress(((currentIndex + 1) / totalRows) * 100);

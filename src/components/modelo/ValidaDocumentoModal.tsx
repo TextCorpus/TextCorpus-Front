@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import fetchData from "../../utils/fetchData";
+import config from "../../config";
 
 interface Documento {
   className: string;
@@ -55,7 +56,7 @@ const ValidaDocumentoModal: React.FC<ValidaDocumentoModalProps> = ({
         setLoading(true);
         try {
           // URL do endpoint
-          const url = `http://185.137.92.41:3001/documento/documentvalid/${idProjeto}/${idModelo}/${idDocumento}`;
+          const url = `${config.apiUrl}/documento/documentvalid/${idProjeto}/${idModelo}/${idDocumento}`;
 
           // Chama a função fetchData
           const response = await fetchData(url, 'get', toast);
@@ -101,7 +102,7 @@ const ValidaDocumentoModal: React.FC<ValidaDocumentoModalProps> = ({
   // Envia os dados atualizados para o endpoint com PUT
   const handleSubmit = async () => {
     // URL do endpoint
-    const url = `http://185.137.92.41:3001/documento/documentvalid/${idProjeto}/${idModelo}/${idDocumento}`;
+    const url = `${config.apiUrl}/documento/documentvalid/${idProjeto}/${idModelo}/${idDocumento}`;
 
     // Corpo da requisição com todos os atributos
     const requestData = data.map((item) => ({

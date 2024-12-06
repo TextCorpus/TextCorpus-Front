@@ -37,6 +37,7 @@ export interface Projeto {
   ano_inicial: number;
   ano_final: number;
   descritor: boolean;
+  usuario: boolean;
   documentos: Documento[];
 }
 

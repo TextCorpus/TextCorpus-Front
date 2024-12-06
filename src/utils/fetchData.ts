@@ -6,7 +6,6 @@ const fetchData = async (
   toast: any,
   data?: any
 ) => {
-  console.log("fetchData .....");
   try {
     // Fazer a requisição usando a instância `api`
     const response = await api({
@@ -14,7 +13,6 @@ const fetchData = async (
       method,
       ...(data ? { data } : {}), // Inclui os dados no corpo da requisição, se houver
     });
-    console.log("data", data)
 
     if (response.status >= 200 && response.status < 300) {
       // Mensagens de sucesso para POST, PUT, PATCH e DELETE

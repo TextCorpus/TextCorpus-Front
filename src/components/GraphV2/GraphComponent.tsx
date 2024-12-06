@@ -9,6 +9,8 @@ import {
 } from "@chakra-ui/react";
 import * as d3 from "d3";
 import { Simulate } from "react-dom/test-utils";
+import fetchData from "../../utils/fetchData";
+import { useCustomToast } from "../../utils/toastUtils";
 
 interface GraphProps {
     apiUrl: string;
@@ -21,6 +23,8 @@ const GraphComponent: React.FC<GraphProps> = ({ apiUrl, token }) => {
     const [links, setLinks] = useState<any[]>([]);
     const tooltipRef = useRef<HTMLDivElement | null>(null);
     const [layout, setLayout] = useState<string>("normal");
+    const toast = useCustomToast();
+
 
     useEffect(() => {
         fetchAndDrawGraph();
@@ -29,20 +33,15 @@ const GraphComponent: React.FC<GraphProps> = ({ apiUrl, token }) => {
 
     const fetchAndDrawGraph = async () => {
         try {
-            const response = await fetch(apiUrl, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            console.log("junior")
+            const data= await fetchData(
+                apiUrl,       // URL da API
+                'get',        // Método HTTP
+                toast         // Função toast para exibir mensagens
+            );
 
-            if (!response.ok) {
-                throw new Error(`Erro ao buscar os dados: ${response.statusText}`);
-            }
+            console.log("jose");
 
-            const data = await response.json();
+            // const data = await response.json();
 
             if (!data.graphData || !data.graphData.nodes || !data.graphData.edges) {
                 throw new Error("Formato inválido do JSON retornado.");
@@ -467,12 +466,12 @@ const GraphComponent: React.FC<GraphProps> = ({ apiUrl, token }) => {
             <Menu>
                 <MenuButton as={Button}>☰ Menu</MenuButton>
                 <MenuList>
-                    <MenuItem onClick={() => setLayout("normal")}>Normal</MenuItem>
-                    <MenuItem onClick={() => setLayout("mundop")}>Pequeno Mundo</MenuItem>
+                    <MenuItem onClick={() => setLayout("normal")}>Normal</MenuItem> {/*já testado */}
+                    <MenuItem onClick={() => setLayout("mundop")}>Pequeno Mundo</MenuItem> {/*já testado */}
                     <MenuItem onClick={() => setLayout("hierar")}>Hierárquico</MenuItem>
                     <MenuItem onClick={() => setLayout("gradeg")}>Grade</MenuItem>
                     <MenuItem onClick={() => setLayout("circul")}>Circular</MenuItem>
-                    <MenuItem onClick={() => setLayout("cluste")}>Clustered Force</MenuItem>
+                    <MenuItem onClick={() => setLayout("cluste")}>Clustered Force</MenuItem> {/*já testado */}
                     <MenuItem onClick={() => setLayout("espira")}>Espiral</MenuItem>
                     <MenuItem onClick={() => setLayout("arvore")}>Árvore Radial</MenuItem>
                     <MenuItem onClick={() => setLayout("concen")}>Círculos Concêntricos</MenuItem>

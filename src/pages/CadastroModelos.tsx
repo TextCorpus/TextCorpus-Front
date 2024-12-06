@@ -2,6 +2,7 @@ import React from 'react';
 import { Flex, Box } from '@chakra-ui/react';
 import DataTable from '../components/dataTable/DataTable';
 import paginaAfiliacao from '../screens/columnsModelos.json';
+import config from '../config';
 
 // Colunas para outra tabela (pode usar as mesmas ou alterar conforme a necessidade)
 //const columnsOutraTabela: Column[] = paginaAfiliacao as Column[];
@@ -17,7 +18,7 @@ const CadastroModelo: React.FC = () => {
                     createEndpoint={paginaAfiliacao.createEndpoint}
                     updateEndpoint={paginaAfiliacao.updateEndpoint}
                     deleteEndpoint={paginaAfiliacao.deleteEndpoint}
-                    dynamicSelectEndpoint={"http://185.137.92.41:3001/projetos/list"}
+                    dynamicSelectEndpoint={config.apiUrl+"/projetos/list"}
                     dynamicSelectValueField={"id_projeto"}
                     dynamicSelectLabelField={"titulo"}
                     infoText="Documentos"

@@ -1,6 +1,6 @@
 // src/App.tsx
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from './theme/theme';
 import Home from './pages/Home';
@@ -10,9 +10,10 @@ import Projetos from './pages/Projetos';
 import PrivateRoute from './routes/PrivateRoute';
 import Login from './pages/Login';
 //import CadastroModelo from './pages/CadastroModelo';
-import CadastroModelos from './pages/CadastroModelos';
+//import CadastroModelos from './pages/CadastroModelos';
 import Dashboard from './pages/processos';
 import GraphComponent from './components/GraphV2/GraphComponent';
+import config from './config';
 
 const columnsAfiliacao = [
   { key: 'id_filiacao', label: 'ID', editable: false, isKey: true },
@@ -22,7 +23,7 @@ const columnsAfiliacao = [
   { key: 'uf', label: 'UF', editable: true, isKey: false },
 ];
 
-const apiUrl = "http://185.137.92.41:3001/documento/graph/2";
+const apiUrl = config.apiUrl + "/documento/graph/2";
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByb2Yuam9zZWNhcm1pbm9AdWxpZmUuY29tLmJyIiwic3ViIjoxLCJpYXQiOjE3MzI0MzMxMDksImV4cCI6MTczMjQzNjcwOX0.vAQxja5bHcGMKKBAJJhB2yYMb7qtdlinulBUwV0Of9c";
 

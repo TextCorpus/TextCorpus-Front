@@ -16,6 +16,7 @@ import DataTable from '../components/dataTable/DataTable'; // Certifique-se de q
 import { User } from '../types';
 import { useCustomToast } from '../utils/toastUtils';
 import paginaAfiliacao from '../screens/columnsAfiliacao.json';
+import config from '../config';
 
 const DadosPessoais: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -38,11 +39,12 @@ const DadosPessoais: React.FC = () => {
 
   // Função para buscar dados do usuário
   useEffect(() => {
+    console.log("configuração ", config.apiUrl)
     if (isEditing) return; // Desabilita o useEffect se o usuário estiver editando
     const fetchUserData = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.get('http://185.137.92.41:3001/users');
+        const response = await axiosInstance.get(`${config.apiUrl}/users`);
         if (response.status === 200) {
           setUser(response.data);
         } else {
@@ -96,7 +98,7 @@ const DadosPessoais: React.FC = () => {
       return;
     }
     try {
-      const response = await axiosInstance.patch('http://185.137.92.41:3001/users', {
+      const response = await axiosInstance.patch(`${config.apiUrl}/users`, {
         nome: user?.nome,
         email: user?.email,
       });
@@ -123,7 +125,7 @@ const DadosPessoais: React.FC = () => {
     setIsEditing(false); // Cancela a edição e desabilita os botões
     // Recarrega os dados do usuário ao cancelar
     const fetchUserData = async () => {
-      const response = await axiosInstance.get('http://185.137.92.41:3001/users');
+      const response = await axiosInstance.get(`${config.apiUrl}/users`);
       setUser(response.data);
     };
     fetchUserData();

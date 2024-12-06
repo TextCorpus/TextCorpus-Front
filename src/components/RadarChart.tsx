@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Box, Spinner, Text } from '@chakra-ui/react';
 import * as d3 from 'd3';
 import axios from 'axios';
+import config from '../config';
 
 interface RadarChartProps {
   id_modelo: number;
@@ -25,7 +26,7 @@ const RadarChart: React.FC<RadarChartProps> = ({ id_modelo, id_projeto }) => {
     const fetchDocuments = async () => {
       try {
         const response = await axios.get(
-          `http://185.137.92.41:3001/process/formattedresults/${id_modelo}/${id_projeto}/0`
+          `${config.apiUrl}/process/formattedresults/${id_modelo}/${id_projeto}/0`
         );
         const data = response.data.data.slice(1); // Ignorar o cabeçalho
         setDocuments(data as Document[]);

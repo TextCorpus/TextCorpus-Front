@@ -29,16 +29,18 @@ interface DocumentDetailsProps {
   handleCancelClick: () => void;
   handleEditClick: () => void;
   isDescritor: boolean;
+  permissao: boolean;
 }
 
 const DocumentDetails: React.FC<DocumentDetailsProps> = ({
   selectedDocumento,
   isEditing,
   setSelectedDocumento,
-  handleSaveClick, 
+  handleSaveClick,
   handleCancelClick,
   handleEditClick,
   isDescritor,
+  permissao,
 }) => {
   const [palavrasChave, setPalavrasChave] = useState<string[]>(selectedDocumento.palavraChave || []);
   const [novaPalavraChave, setNovaPalavraChave] = useState('');
@@ -52,7 +54,7 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({
   useEffect(() => {
     setSelectedDocumento((prevDocumento) => {
       if (!prevDocumento) {
-        return null; 
+        return null;
       }
       return {
         ...prevDocumento,
@@ -153,15 +155,17 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({
               </>
             ) : (
               <>
-                <Tooltip label="Editar">
-                  <IconButton
-                    icon={<EditIcon boxSize={6} />} 
-                    colorScheme="teal"
-                    onClick={handleEditClick}
-                    mr={2}
-                    aria-label="Editar"
-                  />
-                </Tooltip>
+                {permissao && (
+                  <Tooltip label="Editar">
+                    <IconButton
+                      icon={<EditIcon boxSize={6} />}
+                      colorScheme="teal"
+                      onClick={handleEditClick}
+                      mr={2}
+                      aria-label="Editar"
+                    />
+                  </Tooltip>
+                )}
                 <Tooltip label="Ver grafo do texto">
                   <FontAwesomeIcon
                     icon={faDiagramProject}
@@ -180,14 +184,16 @@ const DocumentDetails: React.FC<DocumentDetailsProps> = ({
                     aria-label="Ver o grafo"
                   />
                 </Tooltip>
-                <Tooltip label="Excluir">
-                  <IconButton
-                    icon={<DeleteIcon boxSize={6} />} 
-                    colorScheme="red"
-                    aria-label="Excluir"
-                    mr={2}
-                  />
-                </Tooltip>
+                {permissao && (
+                  <Tooltip label="Excluir">
+                    <IconButton
+                      icon={<DeleteIcon boxSize={6} />}
+                      colorScheme="red"
+                      aria-label="Excluir"
+                      mr={2}
+                    />
+                  </Tooltip>
+                )}
               </>
             )}
           </Flex>

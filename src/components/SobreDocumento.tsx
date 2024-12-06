@@ -17,6 +17,7 @@ import { Word as CloudWord } from 'd3-cloud'; // Renomeia o tipo `Word` como `Cl
 import WordCloudComponent from './words/WordCloudComponent'; // Componente de Nuvem de Palavras
 import fetchData from '../utils/fetchData';
 import { useCustomToast } from '../utils/toastUtils';
+import config from '../config';
 
 interface SobreDocumentoProps {
   id_documento: number;
@@ -59,7 +60,7 @@ const SobreDocumento: React.FC<SobreDocumentoProps> = ({ id_documento, titulo, i
   // Função para buscar as palavras
   const fetchFreqPalavras = async () => {
     try {
-      const response: WordData[] = await fetchData(`http://185.137.92.41:3001/documento/freqwords/${id_documento}`, 'get', toast);
+      const response: WordData[] = await fetchData(`${config.apiUrl}/documento/freqwords/${id_documento}`, 'get', toast);
       setFreqPalav(response);
     } catch (error) {
       console.error('Erro ao buscar dados de similaridade do grafo:', error);
@@ -70,7 +71,7 @@ const SobreDocumento: React.FC<SobreDocumentoProps> = ({ id_documento, titulo, i
   const fetchNuvemPalavras = async () => {
     try {
       const response = await fetchData(
-        `http://185.137.92.41:3001/documento/WordsCloud/${id_documento}`,
+        `${config.apiUrl}/documento/WordsCloud/${id_documento}`,
         'get',
         toast
       );
@@ -84,7 +85,7 @@ const SobreDocumento: React.FC<SobreDocumentoProps> = ({ id_documento, titulo, i
     const fetchGraphSemantic = async () => {
       try {
         const response = await fetchData(
-          `http://185.137.92.41:3001/documento/GraphSemantic/${id_documento}`,
+          `${config.apiUrl}/documento/GraphSemantic/${id_documento}`,
           'get',
           toast
         );
@@ -99,7 +100,7 @@ const SobreDocumento: React.FC<SobreDocumentoProps> = ({ id_documento, titulo, i
   const fetchGraphSimilarity = async () => {
     try {
       const response = await fetchData(
-        `http://185.137.92.41:3001/documento/GraphSimilarity/${id_documento}`,
+        `${config.apiUrl}/documento/GraphSimilarity/${id_documento}`,
         'get',
         toast
       );
@@ -138,7 +139,7 @@ const SobreDocumento: React.FC<SobreDocumentoProps> = ({ id_documento, titulo, i
 
     try {
       const response = await fetchData(
-        `http://185.137.92.41:3001/documento/graph/${id_documento}`,
+        `${config.apiUrl}/documento/graph/${id_documento}`,
         'get',
         toast
       );

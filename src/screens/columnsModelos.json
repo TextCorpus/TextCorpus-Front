@@ -23,7 +23,7 @@
       "isKey": false,
       "dataType": "string",
       "elementType": "selectDinamic",  
-      "dynamicEndpoint": "http://185.137.92.41:3001/projetos/list",  
+      "dynamicEndpoint": "https://backend.impactosociedade.com.br/projetos/list",  
       "dynamicValueField": "id_projeto",  
       "dynamicLabelField": "titulo" 
     },
@@ -36,8 +36,8 @@
       "elementType": "input"
     }
   ],
-  "fetchEndpoint": "http://185.137.92.41:3001/modelos",
-  "createEndpoint": "http://185.137.92.41:3001/modelos",
-  "updateEndpoint": "http://185.137.92.41:3001/modelos",
-  "deleteEndpoint": "http://185.137.92.41:3001/modelos"
+  "fetchEndpoint":  "https://backend.impactosociedade.com.br/modelos",
+  "createEndpoint": "https://backend.impactosociedade.com.br/modelos",
+  "updateEndpoint": "https://backend.impactosociedade.com.br/modelos",
+  "deleteEndpoint": "https://backend.impactosociedade.com.br/modelos"
 }

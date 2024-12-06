@@ -25,6 +25,7 @@ interface ProjectDetailsProps {
   handleSaveClick: () => void;
   handleCancelClick: () => void;
   handleEditClick: () => void;
+  permissao: boolean;
 }
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({
@@ -35,6 +36,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
+  permissao,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGrafiOpen, setIsGrafiOpen] = useState(false);
@@ -80,7 +82,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
         />
       </FormControl>
 
-      <FormControl mb={4}>
+      {/* <FormControl mb={4}>
         <FormLabel>Descritor</FormLabel>
         <RadioGroup
           onChange={(value) => setSelectedProjeto({ ...selectedProjeto, descritor: value === 'Sim' })}
@@ -92,7 +94,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
             <Radio value="Não">Não</Radio>
           </HStack>
         </RadioGroup>
-      </FormControl>
+      </FormControl> */}
 
       <Flex mt={4}>
         {isEditing ? (
@@ -106,11 +108,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
           </>
         ) : (
           <>
-            <Tooltip label="Editar">
+            {permissao && (<Tooltip label="Editar">
               <IconButton icon={<EditIcon />} colorScheme="teal" onClick={handleEditClick} mr={2} aria-label="Editar" />
-            </Tooltip>
+            </Tooltip>)}
 
-            {selectedProjeto.descritor && (<Tooltip label="Aprendizagem">
+            {selectedProjeto.descritor && permissao && (<Tooltip label="Aprendizagem">
               <FontAwesomeIcon
                 icon={faMicrochip}
                 style={{
@@ -129,32 +131,37 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
               />
             </Tooltip>)}
 
-            <Tooltip label="Relatórios">
-              <FontAwesomeIcon
-                icon={faChartPie}
-                style={{
-                  fontSize: '24px',
-                  width: '30px',
-                  height: '30px',
-                  cursor: 'pointer',
-                  backgroundColor: 'teal',
-                  borderRadius: '5px',
-                  padding: '5px',
-                  marginRight: '8px',
-                  color: 'white',
-                }}
-                onClick={handleGrafiOpen} // Abre o modal de relatórios ao clicar
-                aria-label="Relatórios"
-              />
-            </Tooltip>
-            <Tooltip label="Excluir">
-              <IconButton
-                icon={<DeleteIcon boxSize={6} />}
-                colorScheme="red"
-                aria-label="Excluir"
-                mr={2}
-              />
-            </Tooltip>
+            {!selectedProjeto.descritor && (
+              <Tooltip label="Relatórios">
+                <FontAwesomeIcon
+                  icon={faChartPie}
+                  style={{
+                    fontSize: '24px',
+                    width: '30px',
+                    height: '30px',
+                    cursor: 'pointer',
+                    backgroundColor: 'teal',
+                    borderRadius: '5px',
+                    padding: '5px',
+                    marginRight: '8px',
+                    color: 'white',
+                  }}
+                  onClick={handleGrafiOpen} // Abre o modal de relatórios ao clicar
+                  aria-label="Relatórios"
+                />
+              </Tooltip>
+            )}
+            
+            {permissao && (
+              <Tooltip label="Excluir">
+                <IconButton
+                  icon={<DeleteIcon boxSize={6} />}
+                  colorScheme="red"
+                  aria-label="Excluir"
+                  mr={2}
+                />
+              </Tooltip>
+            )}
           </>
         )}
       </Flex>

@@ -21,6 +21,7 @@ import {
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import fetchData from '../../utils/fetchData';
 import ModeloComponent from './ModeloComponent';
+import config from '../../config';
 
 interface Modelo {
   id_modelo: number;
@@ -67,8 +68,8 @@ const ModelosModal: React.FC<ModelosModalProps> = ({ isOpen, onClose, id_projeto
   useEffect(() => {
     const fetchModelos = async () => {
       try {
-        const response = await fetchData(`http://185.137.92.41:3001/modelos/projeto/${id_projeto}`, 'get', toast);
-        setModelos(Array.isArray(response) ? response : []); 
+        const response = await fetchData(`${config.apiUrl}/modelos/projeto/${id_projeto}`, 'get', toast);
+        setModelos(Array.isArray(response) ? response : []);
       } catch (error) {
         toast({
           title: "Erro ao carregar modelos.",
@@ -84,14 +85,25 @@ const ModelosModal: React.FC<ModelosModalProps> = ({ isOpen, onClose, id_projeto
     fetchModelos();
   }, [id_projeto]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      // Resetar os estados ao fechar o modal
+      //setModelos([]);
+      //setIsLoading(true);
+      setSelectedModel(null);
+      setLoadingDocuments(false);
+    }
+  }, [isOpen]);
+
+
   const handleDocumentosClick = async (id_modelo: number) => {
     setLoadingDocuments(true);
     try {
-      const url = `http://185.137.92.41:3001/documento-modelo/${id_projeto}`;
-      const metodo = 'post'; 
+      const url = `${config.apiUrl}/documento-modelo/${id_projeto}`;
+      const metodo = 'post';
       const dados = { id_modelo: id_modelo };
       const response = await fetchData(url, metodo, toast, dados);
-      setSelectedModel(response); 
+      setSelectedModel(response);
     } catch (error) {
       toast({
         title: "Erro ao carregar documentos.",
@@ -105,19 +117,34 @@ const ModelosModal: React.FC<ModelosModalProps> = ({ isOpen, onClose, id_projeto
     }
   };
 
+  const handleAddModelDescritor = async (id_modelo: number) => {
+    setLoadingDocuments(true);
+    const url = `${config.apiUrl}/modelos`;
+    const metodo = 'post';
+    const dados = { descricao: "Modelo de Classificação Bayesiana", projeto: id_projeto, treinamento: {} };
+
+    const response = await fetchData(url, metodo, toast, dados);
+    if (response) {
+      setSelectedModel(response);
+    }
+
+    setLoadingDocuments(false);
+  };
+
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="full">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Lista de Modelos construídos para o projeto</ModalHeader>
+        <ModalHeader>Lista de Modelos construídos para o descritor</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           {isLoading && (
             <Spinner size="xl" />
           )}
-          
+
           {!isLoading && (
-            <Grid templateColumns="40% 60%" gap={4} height="70vh">
+            <Grid templateColumns="40% 59%" gap={4} height="90vh">
               <GridItem
                 border="1px solid"
                 borderColor="gray.400"
@@ -126,6 +153,12 @@ const ModelosModal: React.FC<ModelosModalProps> = ({ isOpen, onClose, id_projeto
                 height="100%"
                 overflowY="auto"
               >
+                <Button
+                  colorScheme="teal"
+                  onClick={() => handleAddModelDescritor(id_projeto)} // Substitua por sua função de clique
+                >
+                  Adicionar outro modelo ao descritor
+                </Button>
                 <VStack spacing={4} align="start">
                   {modelos.length > 0 ? (
                     modelos.map((modelo) => (
